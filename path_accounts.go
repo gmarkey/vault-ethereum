@@ -138,6 +138,10 @@ Send ETH from an account.
 `,
 			Fields: map[string]*framework.FieldSchema{
 				"name": {Type: framework.TypeString},
+				"chain_id": {
+					Type:        framework.TypeString,
+					Description: "Chain ID number.",
+				},
 				"to": {
 					Type:        framework.TypeString,
 					Description: "The address of the wallet to send ETH to.",
@@ -178,6 +182,55 @@ Return the balance in wei for an address.
 			ExistenceCheck: pathExistenceCheck,
 			Callbacks: map[logical.Operation]framework.OperationFunc{
 				logical.ReadOperation: b.pathReadBalance,
+			},
+		},
+		{
+			Pattern:      QualifiedPath("accounts/" + framework.GenericNameRegex("name") + "/send-tx"),
+			HelpSynopsis: "Sign and send a transaction.",
+			HelpDescription: `
+
+Sign and send a transaction.
+
+`,
+			Fields: map[string]*framework.FieldSchema{
+				"name":    {Type: framework.TypeString},
+				"address": {Type: framework.TypeString},
+				"to": {
+					Type:        framework.TypeString,
+					Description: "The address of the wallet to send ETH to.",
+				},
+				"data": {
+					Type:        framework.TypeString,
+					Description: "The data to sign.",
+				},
+				"encoding": {
+					Type:        framework.TypeString,
+					Default:     "utf8",
+					Description: "The encoding of the data to sign.",
+				},
+				"amount": {
+					Type:        framework.TypeString,
+					Description: "Amount of ETH (in wei).",
+				},
+				"nonce": {
+					Type:        framework.TypeString,
+					Description: "The transaction nonce.",
+				},
+				"gas_limit": {
+					Type:        framework.TypeString,
+					Description: "The gas limit for the transaction - defaults to 21000.",
+					Default:     "21000",
+				},
+				"gas_price": {
+					Type:        framework.TypeString,
+					Description: "The gas price for the transaction in wei.",
+					Default:     "0",
+				},
+			},
+			ExistenceCheck: pathExistenceCheck,
+			Callbacks: map[logical.Operation]framework.OperationFunc{
+				logical.CreateOperation: b.pathSendTx,
+				logical.UpdateOperation: b.pathSendTx,
 			},
 		},
 		{
@@ -648,6 +701,7 @@ func (b *PluginBackend) pathTransfer(ctx context.Context, req *logical.Request, 
 	if err != nil {
 		return nil, err
 	}
+
 	err = client.SendTransaction(context.Background(), signedTx)
 	if err != nil {
 		return nil, err
@@ -658,6 +712,7 @@ func (b *PluginBackend) pathTransfer(ctx context.Context, req *logical.Request, 
 
 	return &logical.Response{
 		Data: map[string]interface{}{
+		        "chain_id":           chainID.String(),
 			"transaction_hash":   signedTx.Hash().Hex(),
 			"signed_transaction": hexutil.Encode(signedTxBuff.Bytes()),
 			"from":               account.Address.Hex(),
@@ -864,6 +919,95 @@ func (b *PluginBackend) pathReadBalance(ctx context.Context, req *logical.Reques
 	}, nil
 
 }
+
+
+func (b *PluginBackend) pathSendTx(ctx context.Context, req *logical.Request, data *framework.FieldData) (*logical.Response, error) {
+	var txDataToSign []byte
+	config, err := b.configured(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	client, err := ethclient.Dial(config.getRPCURL())
+	if err != nil {
+		return nil, fmt.Errorf("cannot connect to " + config.getRPCURL())
+	}
+
+	name := data.Get("name").(string)
+
+	chainID := util.ValidNumber(config.ChainID)
+	if chainID == nil {
+		return nil, fmt.Errorf("invalid chain ID")
+	}
+	dataOrFile := data.Get("data").(string)
+	encoding := data.Get("encoding").(string)
+	if encoding == "hex" {
+		txDataToSign, err = util.Decode([]byte(dataOrFile))
+		if err != nil {
+			return nil, err
+		}
+	} else if encoding == "utf8" {
+		txDataToSign = []byte(dataOrFile)
+	} else {
+		return nil, fmt.Errorf("invalid encoding encountered - %s", encoding)
+	}
+	accountJSON, err := readAccount(ctx, req, name)
+	if err != nil {
+		return nil, err
+	}
+
+	wallet, account, err := getWalletAndAccount(*accountJSON)
+	if err != nil {
+		return nil, err
+	}
+	transactionParams, err := b.getData(client, account.Address, data)
+	if err != nil {
+		return nil, err
+	}
+
+	accountJSON.Inclusions = append(accountJSON.Inclusions, config.Inclusions...)
+	if len(accountJSON.Inclusions) > 0 && !util.Contains(accountJSON.Inclusions, transactionParams.Address.Hex()) {
+		return nil, fmt.Errorf("%s violates the set of inclusions %+v", transactionParams.Address.Hex(), accountJSON.Inclusions)
+	}
+	err = config.ValidAddress(transactionParams.Address)
+	if err != nil {
+		return nil, err
+	}
+	err = accountJSON.ValidAddress(transactionParams.Address)
+	if err != nil {
+		return nil, err
+	}
+
+	tx := types.NewTransaction(transactionParams.Nonce, *transactionParams.Address, transactionParams.Amount, transactionParams.GasLimit, transactionParams.GasPrice, txDataToSign)
+
+	signedTx, err := wallet.SignTx(*account, tx, chainID)
+	if err != nil {
+		return nil, err
+	}
+
+	err = client.SendTransaction(context.Background(), signedTx)
+	if err != nil {
+		return nil, err
+	}
+
+	var signedTxBuff bytes.Buffer
+	signedTx.EncodeRLP(&signedTxBuff)
+
+
+	return &logical.Response{
+		Data: map[string]interface{}{
+			"transaction_hash":   signedTx.Hash().Hex(),
+			"signed_transaction": hexutil.Encode(signedTxBuff.Bytes()),
+			"from":               account.Address.Hex(),
+			"to":                 transactionParams.Address.String(),
+			"amount":             transactionParams.Amount.String(),
+			"nonce":              strconv.FormatUint(transactionParams.Nonce, 10),
+			"gas_price":          transactionParams.GasPrice.String(),
+			"gas_limit":          strconv.FormatUint(transactionParams.GasLimit, 10),
+		},
+	}, nil
+
+}
+
 
 // LogTx is for debugging
 func (b *PluginBackend) LogTx(tx *types.Transaction) {
