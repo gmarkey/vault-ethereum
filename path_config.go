@@ -18,7 +18,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/immutability-io/vault-ethereum/util"
+	"github.com/gmarkey/vault-ethereum/util"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/hashicorp/errwrap"

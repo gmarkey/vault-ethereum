@@ -16,8 +16,8 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/hashicorp/vault/sdk/framework"
 	"github.com/hashicorp/vault/sdk/logical"
-	"github.com/immutability-io/vault-ethereum/contracts/erc721"
-	"github.com/immutability-io/vault-ethereum/util"
+	"github.com/gmarkey/vault-ethereum/contracts/erc721"
+	"github.com/gmarkey/vault-ethereum/util"
 )
 
 const erc721Contract string = "erc-721"

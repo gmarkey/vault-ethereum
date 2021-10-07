@@ -30,12 +30,12 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	bip44 "github.com/immutability-io/go-ethereum-hdwallet"
+	bip44 "github.com/miguelmota/go-ethereum-hdwallet"
 	"github.com/tyler-smith/go-bip39"
 
 	"github.com/hashicorp/vault/sdk/framework"
 	"github.com/hashicorp/vault/sdk/logical"
-	"github.com/immutability-io/vault-ethereum/util"
+	"github.com/gmarkey/vault-ethereum/util"
 )
 
 const (
