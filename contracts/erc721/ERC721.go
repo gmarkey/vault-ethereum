@@ -4,6 +4,7 @@
 package erc721
 
 import (
+	"errors"
 	"math/big"
 	"strings"
 
@@ -17,6 +18,7 @@ import (
 
 // Reference imports to suppress errors if they are not otherwise used.
 var (
+	_ = errors.New
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
@@ -26,8 +28,14 @@ var (
 	_ = event.NewSubscription
 )
 
+// Erc721MetaData contains all meta data concerning the Erc721 contract.
+var Erc721MetaData = &bind.MetaData{
+	ABI: "[{\"constant\":true,\"inputs\":[{\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"getApproved\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_approved\",\"type\":\"address\"},{\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"ownerOf\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_owner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_operator\",\"type\":\"address\"},{\"name\":\"_approved\",\"type\":\"bool\"}],\"name\":\"setApprovalForAll\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_tokenId\",\"type\":\"uint256\"},{\"name\":\"_data\",\"type\":\"bytes\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_owner\",\"type\":\"address\"},{\"name\":\"_operator\",\"type\":\"address\"}],\"name\":\"isApprovedForAll\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"_from\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_to\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"_owner\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_approved\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"_owner\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_operator\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"_approved\",\"type\":\"bool\"}],\"name\":\"ApprovalForAll\",\"type\":\"event\"}]",
+}
+
 // Erc721ABI is the input ABI used to generate the binding from.
-const Erc721ABI = "[{\"constant\":true,\"inputs\":[{\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"getApproved\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_approved\",\"type\":\"address\"},{\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"ownerOf\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_owner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_operator\",\"type\":\"address\"},{\"name\":\"_approved\",\"type\":\"bool\"}],\"name\":\"setApprovalForAll\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_tokenId\",\"type\":\"uint256\"},{\"name\":\"_data\",\"type\":\"bytes\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_owner\",\"type\":\"address\"},{\"name\":\"_operator\",\"type\":\"address\"}],\"name\":\"isApprovedForAll\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"_from\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_to\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"_owner\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_approved\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"_owner\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_operator\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"_approved\",\"type\":\"bool\"}],\"name\":\"ApprovalForAll\",\"type\":\"event\"}]"
+// Deprecated: Use Erc721MetaData.ABI instead.
+var Erc721ABI = Erc721MetaData.ABI
 
 // Erc721 is an auto generated Go binding around an Ethereum contract.
 type Erc721 struct {
@@ -137,7 +145,7 @@ func bindErc721(address common.Address, caller bind.ContractCaller, transactor b
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Erc721 *Erc721Raw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Erc721 *Erc721Raw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Erc721.Contract.Erc721Caller.contract.Call(opts, result, method, params...)
 }
 
@@ -156,7 +164,7 @@ func (_Erc721 *Erc721Raw) Transact(opts *bind.TransactOpts, method string, param
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Erc721 *Erc721CallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Erc721 *Erc721CallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Erc721.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -175,12 +183,17 @@ func (_Erc721 *Erc721TransactorRaw) Transact(opts *bind.TransactOpts, method str
 //
 // Solidity: function balanceOf(address _owner) view returns(uint256)
 func (_Erc721 *Erc721Caller) BalanceOf(opts *bind.CallOpts, _owner common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Erc721.contract.Call(opts, out, "balanceOf", _owner)
-	return *ret0, err
+	var out []interface{}
+	err := _Erc721.contract.Call(opts, &out, "balanceOf", _owner)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
@@ -201,12 +214,17 @@ func (_Erc721 *Erc721CallerSession) BalanceOf(_owner common.Address) (*big.Int, 
 //
 // Solidity: function getApproved(uint256 _tokenId) view returns(address)
 func (_Erc721 *Erc721Caller) GetApproved(opts *bind.CallOpts, _tokenId *big.Int) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Erc721.contract.Call(opts, out, "getApproved", _tokenId)
-	return *ret0, err
+	var out []interface{}
+	err := _Erc721.contract.Call(opts, &out, "getApproved", _tokenId)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetApproved is a free data retrieval call binding the contract method 0x081812fc.
@@ -227,12 +245,17 @@ func (_Erc721 *Erc721CallerSession) GetApproved(_tokenId *big.Int) (common.Addre
 //
 // Solidity: function isApprovedForAll(address _owner, address _operator) view returns(bool)
 func (_Erc721 *Erc721Caller) IsApprovedForAll(opts *bind.CallOpts, _owner common.Address, _operator common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _Erc721.contract.Call(opts, out, "isApprovedForAll", _owner, _operator)
-	return *ret0, err
+	var out []interface{}
+	err := _Erc721.contract.Call(opts, &out, "isApprovedForAll", _owner, _operator)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsApprovedForAll is a free data retrieval call binding the contract method 0xe985e9c5.
@@ -253,12 +276,17 @@ func (_Erc721 *Erc721CallerSession) IsApprovedForAll(_owner common.Address, _ope
 //
 // Solidity: function ownerOf(uint256 _tokenId) view returns(address)
 func (_Erc721 *Erc721Caller) OwnerOf(opts *bind.CallOpts, _tokenId *big.Int) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Erc721.contract.Call(opts, out, "ownerOf", _tokenId)
-	return *ret0, err
+	var out []interface{}
+	err := _Erc721.contract.Call(opts, &out, "ownerOf", _tokenId)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // OwnerOf is a free data retrieval call binding the contract method 0x6352211e.
@@ -538,6 +566,7 @@ func (_Erc721 *Erc721Filterer) ParseApproval(log types.Log) (*Erc721Approval, er
 	if err := _Erc721.contract.UnpackLog(event, "Approval", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -691,6 +720,7 @@ func (_Erc721 *Erc721Filterer) ParseApprovalForAll(log types.Log) (*Erc721Approv
 	if err := _Erc721.contract.UnpackLog(event, "ApprovalForAll", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
 }
 
@@ -852,161 +882,6 @@ func (_Erc721 *Erc721Filterer) ParseTransfer(log types.Log) (*Erc721Transfer, er
 	if err := _Erc721.contract.UnpackLog(event, "Transfer", log); err != nil {
 		return nil, err
 	}
+	event.Raw = log
 	return event, nil
-}
-
-// TokenByIndex is a free data retrieval call binding the contract method 0x4f6ccce7.
-//
-// Solidity: function tokenByIndex(uint256 _index) view returns(uint256)
-func (_Erc721 *Erc721Caller) TokenByIndex(opts *bind.CallOpts, _index *big.Int) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Erc721.contract.Call(opts, out, "tokenByIndex", _index)
-	return *ret0, err
-}
-
-// TokenByIndex is a free data retrieval call binding the contract method 0x4f6ccce7.
-//
-// Solidity: function tokenByIndex(uint256 _index) view returns(uint256)
-func (_Erc721 *Erc721Session) TokenByIndex(_index *big.Int) (*big.Int, error) {
-	return _Erc721.Contract.TokenByIndex(&_Erc721.CallOpts, _index)
-}
-
-// TokenByIndex is a free data retrieval call binding the contract method 0x4f6ccce7.
-//
-// Solidity: function tokenByIndex(uint256 _index) view returns(uint256)
-func (_Erc721 *Erc721CallerSession) TokenByIndex(_index *big.Int) (*big.Int, error) {
-	return _Erc721.Contract.TokenByIndex(&_Erc721.CallOpts, _index)
-}
-
-// TokenOfOwnerByIndex is a free data retrieval call binding the contract method 0x2f745c59.
-//
-// Solidity: function tokenOfOwnerByIndex(address _owner, uint256 _index) view returns(uint256)
-func (_Erc721 *Erc721Caller) TokenOfOwnerByIndex(opts *bind.CallOpts, _owner common.Address, _index *big.Int) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Erc721.contract.Call(opts, out, "tokenOfOwnerByIndex", _owner, _index)
-	return *ret0, err
-}
-
-// TokenOfOwnerByIndex is a free data retrieval call binding the contract method 0x2f745c59.
-//
-// Solidity: function tokenOfOwnerByIndex(address _owner, uint256 _index) view returns(uint256)
-func (_Erc721 *Erc721Session) TokenOfOwnerByIndex(_owner common.Address, _index *big.Int) (*big.Int, error) {
-	return _Erc721.Contract.TokenOfOwnerByIndex(&_Erc721.CallOpts, _owner, _index)
-}
-
-// TokenOfOwnerByIndex is a free data retrieval call binding the contract method 0x2f745c59.
-//
-// Solidity: function tokenOfOwnerByIndex(address _owner, uint256 _index) view returns(uint256)
-func (_Erc721 *Erc721CallerSession) TokenOfOwnerByIndex(_owner common.Address, _index *big.Int) (*big.Int, error) {
-	return _Erc721.Contract.TokenOfOwnerByIndex(&_Erc721.CallOpts, _owner, _index)
-}
-
-// TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
-//
-// Solidity: function totalSupply() view returns(uint256)
-func (_Erc721 *Erc721Caller) TotalSupply(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Erc721.contract.Call(opts, out, "totalSupply")
-	return *ret0, err
-}
-
-// TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
-//
-// Solidity: function totalSupply() view returns(uint256)
-func (_Erc721 *Erc721Session) TotalSupply() (*big.Int, error) {
-	return _Erc721.Contract.TotalSupply(&_Erc721.CallOpts)
-}
-
-// TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
-//
-// Solidity: function totalSupply() view returns(uint256)
-func (_Erc721 *Erc721CallerSession) TotalSupply() (*big.Int, error) {
-	return _Erc721.Contract.TotalSupply(&_Erc721.CallOpts)
-}
-
-// Name is a free data retrieval call binding the contract method 0x06fdde03.
-//
-// Solidity: function name() view returns(string _name)
-func (_Erc721 *Erc721Caller) Name(opts *bind.CallOpts) (string, error) {
-	var (
-		ret0 = new(string)
-	)
-	out := ret0
-	err := _Erc721.contract.Call(opts, out, "name")
-	return *ret0, err
-}
-
-// Name is a free data retrieval call binding the contract method 0x06fdde03.
-//
-// Solidity: function name() view returns(string _name)
-func (_Erc721 *Erc721Session) Name() (string, error) {
-	return _Erc721.Contract.Name(&_Erc721.CallOpts)
-}
-
-// Name is a free data retrieval call binding the contract method 0x06fdde03.
-//
-// Solidity: function name() view returns(string _name)
-func (_Erc721 *Erc721CallerSession) Name() (string, error) {
-	return _Erc721.Contract.Name(&_Erc721.CallOpts)
-}
-
-// Symbol is a free data retrieval call binding the contract method 0x95d89b41.
-//
-// Solidity: function symbol() view returns(string _symbol)
-func (_Erc721 *Erc721Caller) Symbol(opts *bind.CallOpts) (string, error) {
-	var (
-		ret0 = new(string)
-	)
-	out := ret0
-	err := _Erc721.contract.Call(opts, out, "symbol")
-	return *ret0, err
-}
-
-// Symbol is a free data retrieval call binding the contract method 0x95d89b41.
-//
-// Solidity: function symbol() view returns(string _symbol)
-func (_Erc721 *Erc721Session) Symbol() (string, error) {
-	return _Erc721.Contract.Symbol(&_Erc721.CallOpts)
-}
-
-// Symbol is a free data retrieval call binding the contract method 0x95d89b41.
-//
-// Solidity: function symbol() view returns(string _symbol)
-func (_Erc721 *Erc721CallerSession) Symbol() (string, error) {
-	return _Erc721.Contract.Symbol(&_Erc721.CallOpts)
-}
-
-// TokenURI is a free data retrieval call binding the contract method 0xc87b56dd.
-//
-// Solidity: function tokenURI(uint256 _tokenId) view returns(string)
-func (_Erc721 *Erc721Caller) TokenURI(opts *bind.CallOpts, _tokenId *big.Int) (string, error) {
-	var (
-		ret0 = new(string)
-	)
-	out := ret0
-	err := _Erc721.contract.Call(opts, out, "tokenURI", _tokenId)
-	return *ret0, err
-}
-
-// TokenURI is a free data retrieval call binding the contract method 0xc87b56dd.
-//
-// Solidity: function tokenURI(uint256 _tokenId) view returns(string)
-func (_Erc721 *Erc721Session) TokenURI(_tokenId *big.Int) (string, error) {
-	return _Erc721.Contract.TokenURI(&_Erc721.CallOpts, _tokenId)
-}
-
-// TokenURI is a free data retrieval call binding the contract method 0xc87b56dd.
-//
-// Solidity: function tokenURI(uint256 _tokenId) view returns(string)
-func (_Erc721 *Erc721CallerSession) TokenURI(_tokenId *big.Int) (string, error) {
-	return _Erc721.Contract.TokenURI(&_Erc721.CallOpts, _tokenId)
 }
