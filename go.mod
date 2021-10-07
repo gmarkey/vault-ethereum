@@ -1,4 +1,4 @@
-module github.com/immutability-io/vault-ethereum
+module github.com/gmarkey/vault-ethereum
 
 go 1.14
 
