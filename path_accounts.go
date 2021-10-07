@@ -557,6 +557,7 @@ func (b *PluginBackend) getData(client *ethclient.Client, fromAddress common.Add
 	gasLimitIn = util.ValidNumber(data.Get("gas_limit").(string))
 	gasLimit := gasLimitIn.Uint64()
 
+        b.Logger().Info(fmt.Sprintf("\nGAS LIMIT @getData: %d\n", gasLimit))
 	return &TransactionParams{
 		Nonce:    transactionParams.Nonce,
 		Address:  transactionParams.Address,
@@ -844,6 +845,7 @@ func (b *PluginBackend) pathSignTx(ctx context.Context, req *logical.Request, da
 		return nil, err
 	}
 	transactionParams, err := b.getData(client, account.Address, data)
+        b.Logger().Info(fmt.Sprintf("\nGAS LIMIT @signTx: %d\n", transactionParams.GasLimit))
 	if err != nil {
 		return nil, err
 	}
