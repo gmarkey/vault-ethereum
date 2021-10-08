@@ -571,7 +571,7 @@ func (b *PluginBackend) getData(client *ethclient.Client, fromAddress common.Add
 func (b *PluginBackend) NewWalletTransactor(chainID *big.Int, hdwallet *bip44.Wallet, account *accounts.Account) (*bind.TransactOpts, error) {
 	return &bind.TransactOpts{
 		From: account.Address,
-		Signer: func(signer types.Signer, address common.Address, tx *types.Transaction) (*types.Transaction, error) {
+		Signer: func(address common.Address, tx *types.Transaction) (*types.Transaction, error) {
 			if address != account.Address {
 				return nil, errors.New("not authorized to sign this account")
 			}
