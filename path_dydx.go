@@ -10,6 +10,7 @@ import (
 	"context"
 	"fmt"
 	"math/big"
+	"strconv"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -111,12 +112,12 @@ func (b *PluginBackend) pathDydxDeposit(ctx context.Context, req *logical.Reques
 
 	_, ok = data.GetOk("stark_key")
 	if ok {
-		starkKey = util.ValidNumber(data.Get("stark_key").(string))
+		starkKey = util.ValidNumber(strconv.FormatInt(data.Get("stark_key").(int64), 16))
 		if starkKey == nil {
 			return nil, fmt.Errorf("missing stark key")
 		}
 	} else {
-		starkKey = util.ValidNumber("0")
+		starkKey = big.NewInt(0)
 	}
 
 //	_, ok = data.GetOk("asset_type")
