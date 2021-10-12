@@ -10,12 +10,12 @@ import (
 	"context"
 	"fmt"
 	"math/big"
-	"strconv"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/hashicorp/vault/sdk/framework"
 	"github.com/hashicorp/vault/sdk/logical"
 	"github.com/gmarkey/vault-ethereum/contracts/starkwarePerpetuals"
@@ -112,7 +112,8 @@ func (b *PluginBackend) pathDydxDeposit(ctx context.Context, req *logical.Reques
 
 	_, ok = data.GetOk("stark_key")
 	if ok {
-		starkKey = util.ValidNumber(strconv.FormatInt(data.Get("stark_key").(int64), 16))
+	        starkKeyRaw := data.Get("stark_key").(string)
+		starkKey = math.MustParseBig256("0x" + starkKeyRaw)
 		if starkKey == nil {
 			return nil, fmt.Errorf("missing stark key")
 		}
