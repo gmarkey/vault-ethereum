@@ -12,5 +12,5 @@ require (
 	github.com/shopspring/decimal v1.2.0
 	github.com/superoo7/go-gecko v1.0.0
 	github.com/tyler-smith/go-bip39 v1.0.2
-	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
 )
