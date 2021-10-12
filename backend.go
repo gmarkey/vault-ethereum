@@ -64,6 +64,7 @@ func Backend(conf *logical.BackendConfig) (*PluginBackend, error) {
 			accountPaths(&b),
 			convertPaths(&b),
 			erc20Paths(&b),
+			dydxPaths(&b),
 		),
 		PathsSpecial: &logical.Paths{
 			Unauthenticated: []string{
