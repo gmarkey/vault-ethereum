@@ -89,7 +89,7 @@ func (b *PluginBackend) pathDydxDeposit(ctx context.Context, req *logical.Reques
 	}
 
 	name := data.Get("name").(string)
-	contractAddress := common.HexToAddress("0x014F738EAd8Ec6C50BCD456a971F8B84Cd693BBe")
+	contractAddress := "0x014F738EAd8Ec6C50BCD456a971F8B84Cd693BBe"
 
 	accountJSON, err := readAccount(ctx, req, name)
 	if err != nil {
@@ -141,7 +141,7 @@ func (b *PluginBackend) pathDydxDeposit(ctx context.Context, req *logical.Reques
 		return nil, err
 	}
 
-	instance, err := starkwarePerpetuals.NewStarkwarePerpetuals(contractAddress, client)
+	instance, err := starkwarePerpetuals.NewStarkwarePerpetuals(common.HexToAddress(contractAddress), client)
 	if err != nil {
 		return nil, err
 	}
@@ -152,7 +152,7 @@ func (b *PluginBackend) pathDydxDeposit(ctx context.Context, req *logical.Reques
 //		CallOpts: *callOpts,             // Call options to use throughout this session
 //	}
 
-	transactionParams, err := b.getBaseData(client, account.Address, data, contractAddress.String())
+	transactionParams, err := b.getBaseData(client, account.Address, data, contractAddress)
 	if err != nil {
 		return nil, err
 	}
