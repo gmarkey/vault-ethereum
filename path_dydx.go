@@ -65,6 +65,11 @@ Deposit collateral into dydx account.
 					Default:     "0",
 					Description: "The number of tokens to transfer.",
 				},
+				"contract": {
+					Type:        framework.TypeString,
+					Default:     "0x014F738EAd8Ec6C50BCD456a971F8B84Cd693BBe",
+					Description: "Address of the destination contract.",
+				},
 			},
 			ExistenceCheck: pathExistenceCheck,
 			Callbacks: map[logical.Operation]framework.OperationFunc{
@@ -89,7 +94,8 @@ func (b *PluginBackend) pathDydxDeposit(ctx context.Context, req *logical.Reques
 	}
 
 	name := data.Get("name").(string)
-	contractAddress := "0x014F738EAd8Ec6C50BCD456a971F8B84Cd693BBe"
+	// contractAddress := "0x014F738EAd8Ec6C50BCD456a971F8B84Cd693BBe"
+	contractAddress := data.Get("contract").(string)
 
 	accountJSON, err := readAccount(ctx, req, name)
 	if err != nil {
@@ -152,7 +158,7 @@ func (b *PluginBackend) pathDydxDeposit(ctx context.Context, req *logical.Reques
 //		CallOpts: *callOpts,             // Call options to use throughout this session
 //	}
 
-	transactionParams, err := b.getBaseData(client, account.Address, data, contractAddress)
+	transactionParams, err := b.getBaseData(client, account.Address, data, "contract")
 	if err != nil {
 		return nil, err
 	}
