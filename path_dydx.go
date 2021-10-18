@@ -194,6 +194,13 @@ func (b *PluginBackend) pathDydxDeposit(ctx context.Context, req *logical.Reques
 
         transactOpts.GasPrice = transactionParams.GasPrice
         transactOpts.GasLimit = transactionParams.GasLimit
+        transactOpts.GasTipCap = transactionParams.GasTipCap
+        transactOpts.GasFeeCap = transactionParams.GasFeeCap
+
+        b.Logger().Info(fmt.Sprintf("\nGAS LIMIT: %d\n", transactOpts.GasLimit))
+        b.Logger().Info(fmt.Sprintf("\nGAS PRICE: %d\n", transactOpts.GasPrice))
+        b.Logger().Info(fmt.Sprintf("\nGAS TIPCAP: %d\n", transactOpts.GasTipCap))
+        b.Logger().Info(fmt.Sprintf("\nGAS FEECAP: %d\n", transactOpts.GasFeeCap))
 
         //transactOpts needs gas etc.
         contractSession := &starkwarePerpetuals.StarkwarePerpetualsSession{
