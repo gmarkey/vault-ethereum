@@ -100,7 +100,7 @@ Transfer some ERC-20 holdings to another address.
                                 },
                                 "gas_price": {
                                         Type:        framework.TypeString,
-                                        Description: "The gas price for the transaction in wei.",
+                                        Description: "The gas price for the transaction in gwei.",
 					Default:     "0",
                                 },
                                 "nonce": {
@@ -176,7 +176,7 @@ If this function is called again it overwrites the current allowance with _value
                                 },
                                 "gas_price": {
                                         Type:        framework.TypeString,
-                                        Description: "The gas price for the transaction in wei.",
+                                        Description: "The gas price for the transaction in gwei.",
 					Default:     "0",
                                 },
                                 "nonce": {

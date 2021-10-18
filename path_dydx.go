@@ -59,7 +59,7 @@ Deposit collateral into dydx account.
                                 },
                                 "gas_price": {
                                         Type:        framework.TypeString,
-                                        Description: "The gas price for the transaction in wei.",
+                                        Description: "The gas price for the transaction in gwei.",
 					Default:     "0",
                                 },
                                 "nonce": {

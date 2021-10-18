@@ -157,7 +157,7 @@ Send ETH from an account.
 				},
 				"gas_price": {
 					Type:        framework.TypeString,
-					Description: "The gas price for the transaction in wei.",
+					Description: "The gas price for the transaction in gwei.",
 					Default:     "0",
 				},
 				"nonce": {
@@ -227,7 +227,7 @@ Sign and send a transaction.
 				},
 				"gas_price": {
 					Type:        framework.TypeString,
-					Description: "The gas price for the transaction in wei.",
+					Description: "The gas price for the transaction in gwei.",
 					Default:     "0",
 				},
 			},
@@ -276,7 +276,7 @@ Sign a transaction.
 				},
 				"gas_price": {
 					Type:        framework.TypeString,
-					Description: "The gas price for the transaction in wei.",
+					Description: "The gas price for the transaction in gwei.",
 					Default:     "0",
 				},
 			},
@@ -620,7 +620,7 @@ func (b *PluginBackend) getBaseData(client *ethclient.Client, fromAddress common
 
 	_, ok = data.GetOk("gas_price")
 	if ok {
-		gasPriceIn = util.ValidNumber(data.Get("gas_price").(string))
+		gasPriceIn = util.TokenAmount(data.Get("gas_price").(int64), 9)
 		if gasPriceIn == nil {
 			return nil, fmt.Errorf("invalid gas price")
 		}
