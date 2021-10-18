@@ -60,6 +60,10 @@ Deposit collateral into dydx account.
                                         Type:        framework.TypeString,
                                         Description: "The gas price for the transaction in wei.",
                                 },
+                                "nonce": {
+                                        Type:        framework.TypeString,
+                                        Description: "The transaction nonce.",
+                                },
                                 "stark_key": {
                                         Type:        framework.TypeString,
                                         Description: "The starkware API key.",
@@ -202,9 +206,11 @@ func (b *PluginBackend) pathDydxDeposit(ctx context.Context, req *logical.Reques
 
         transactOpts.GasPrice = transactionParams.GasPrice
         transactOpts.GasLimit = transactionParams.GasLimit
+        transactOpts.Nonce    = transactionParams.Nonce
 
         b.Logger().Info(fmt.Sprintf("\nGAS PRICE: %d\n", transactOpts.GasPrice))
         b.Logger().Info(fmt.Sprintf("\nGAS LIMIT: %d\n", transactOpts.GasLimit))
+        b.Logger().Info(fmt.Sprintf("\nNONCE: %d\n", transactOpts.Nonce))
 
         //transactOpts needs gas etc.
         contractSession := &starkwarePerpetuals.StarkwarePerpetualsSession{
