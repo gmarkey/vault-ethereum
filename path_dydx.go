@@ -192,11 +192,8 @@ func (b *PluginBackend) pathDydxDeposit(ctx context.Context, req *logical.Reques
                 return nil, err
         }
 
-        gasLimitIn := util.ValidNumber(data.Get("gas_limit").(string))
-        gasLimit := gasLimitIn.Uint64()
-
         transactOpts.GasPrice = transactionParams.GasPrice
-        transactOpts.GasLimit = gasLimit
+        transactOpts.GasLimit = transactionParams.GasLimit
 
         b.Logger().Info(fmt.Sprintf("\nGAS PRICE: %d\n", transactOpts.GasPrice))
         b.Logger().Info(fmt.Sprintf("\nGAS LIMIT: %d\n", transactOpts.GasLimit))
