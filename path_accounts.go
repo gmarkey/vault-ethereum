@@ -71,13 +71,11 @@ func (account *AccountJSON) ValidAddress(toAddress *common.Address) error {
 
 // TransactionParams are typical parameters for a transaction
 type TransactionParams struct {
-	Nonce     uint64          `json:"nonce"`
-	Address   *common.Address `json:"address"`
-	Amount    *big.Int        `json:"amount"`
-	GasPrice  *big.Int        `json:"gas_price"`
-        GasFeeCap *big.Int        `json:"gas_fee_cap"`
-        GasTipCap *big.Int        `json:"gas_tip_cap"`
-	GasLimit  uint64          `json:"gas_limit"`
+	Nonce    uint64          `json:"nonce"`
+	Address  *common.Address `json:"address"`
+	Amount   *big.Int        `json:"amount"`
+	GasPrice *big.Int        `json:"gas_price"`
+	GasLimit uint64          `json:"gas_limit"`
 }
 
 func accountPaths(b *PluginBackend) []*framework.Path {
@@ -593,10 +591,7 @@ func (b *PluginBackend) getBaseData(client *ethclient.Client, fromAddress common
 	nonceData := "0"
 	var nonce uint64
 	var amount *big.Int
-	var gasFeeCapIn *big.Int
-	var gasTipCapIn *big.Int
 	var gasPriceIn *big.Int
-
 	_, ok := data.GetOk("amount")
 	if ok {
 		amount = util.ValidNumber(data.Get("amount").(string))
@@ -636,10 +631,6 @@ func (b *PluginBackend) getBaseData(client *ethclient.Client, fromAddress common
 		}
 	}
 
-        // TODO remove
-        gasTipCapIn = gasPriceIn
-        gasFeeCapIn = gasPriceIn
-
 	if addressField != Empty {
 		address = common.HexToAddress(data.Get(addressField).(string))
 		return &TransactionParams{
@@ -647,19 +638,14 @@ func (b *PluginBackend) getBaseData(client *ethclient.Client, fromAddress common
 			Address:  &address,
 			Amount:   amount,
 			GasPrice: gasPriceIn,
-                        GasFeeCap: gasFeeCapIn,
-                        GasTipCap: gasTipCapIn,
 			GasLimit: 0,
 		}, nil
 	}
-
 	return &TransactionParams{
 		Nonce:    nonce,
 		Address:  nil,
 		Amount:   amount,
 		GasPrice: gasPriceIn,
-                GasFeeCap: gasFeeCapIn,
-                GasTipCap: gasTipCapIn,
 		GasLimit: 0,
 	}, nil
 
