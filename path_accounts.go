@@ -160,6 +160,10 @@ Send ETH from an account.
 					Description: "The gas price for the transaction in wei.",
 					Default:     "0",
 				},
+				"nonce": {
+					Type:        framework.TypeString,
+					Description: "The transaction nonce.",
+				},
 			},
 			ExistenceCheck: pathExistenceCheck,
 			Callbacks: map[logical.Operation]framework.OperationFunc{
