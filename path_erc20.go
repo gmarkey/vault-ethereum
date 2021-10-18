@@ -299,7 +299,7 @@ func (b *PluginBackend) pathERC20Transfer(ctx context.Context, req *logical.Requ
 		return nil, err
 	}
 
-	transactionParams, err := b.getBaseData(client, account.Address, data, "to")
+	transactionParams, err := b.getData(client, account.Address, data, "to")
 	if err != nil {
 		return nil, err
 	}
@@ -470,7 +470,7 @@ func (b *PluginBackend) pathERC20Approve(ctx context.Context, req *logical.Reque
 		return nil, err
 	}
 
-	transactionParams, err := b.getBaseData(client, account.Address, data, "spender")
+	transactionParams, err := b.getData(client, account.Address, data, "spender")
 	if err != nil {
 		return nil, err
 	}
@@ -584,7 +584,7 @@ func (b *PluginBackend) pathERC20TransferFrom(ctx context.Context, req *logical.
 		return nil, err
 	}
 
-	transactionParams, err := b.getBaseData(client, account.Address, data, "from")
+	transactionParams, err := b.getData(client, account.Address, data, "from")
 	if err != nil {
 		return nil, err
 	}

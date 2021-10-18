@@ -547,8 +547,8 @@ func pathExistenceCheck(ctx context.Context, req *logical.Request, data *framewo
 
 // returns (nonce, toAddress, amount, gasPrice, gasLimit, error)
 
-func (b *PluginBackend) getData(client *ethclient.Client, fromAddress common.Address, data *framework.FieldData) (*TransactionParams, error) {
-	transactionParams, err := b.getBaseData(client, fromAddress, data, "to")
+func (b *PluginBackend) getData(client *ethclient.Client, fromAddress common.Address, data *framework.FieldData, addressField string) (*TransactionParams, error) {
+	transactionParams, err := b.getBaseData(client, fromAddress, data, addressField)
 	if err != nil {
 		return nil, err
 	}
@@ -678,7 +678,7 @@ func (b *PluginBackend) pathTransfer(ctx context.Context, req *logical.Request, 
 		return nil, err
 	}
 
-	transactionParams, err := b.getData(client, account.Address, data)
+	transactionParams, err := b.getData(client, account.Address, data, "to")
 
 	if err != nil {
 		return nil, err
@@ -844,7 +844,7 @@ func (b *PluginBackend) pathSignTx(ctx context.Context, req *logical.Request, da
 	if err != nil {
 		return nil, err
 	}
-	transactionParams, err := b.getData(client, account.Address, data)
+	transactionParams, err := b.getData(client, account.Address, data, "to")
         b.Logger().Info(fmt.Sprintf("\nGAS LIMIT @signTx: %d\n", transactionParams.GasLimit))
 	if err != nil {
 		return nil, err
@@ -961,7 +961,7 @@ func (b *PluginBackend) pathSendTx(ctx context.Context, req *logical.Request, da
 	if err != nil {
 		return nil, err
 	}
-	transactionParams, err := b.getData(client, account.Address, data)
+	transactionParams, err := b.getData(client, account.Address, data, "to")
 	if err != nil {
 		return nil, err
 	}

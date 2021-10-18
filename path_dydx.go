@@ -163,7 +163,7 @@ func (b *PluginBackend) pathDydxDeposit(ctx context.Context, req *logical.Reques
 //              CallOpts: *callOpts,             // Call options to use throughout this session
 //      }
 
-        transactionParams, err := b.getBaseData(client, account.Address, data, "contract")
+        transactionParams, err := b.getData(client, account.Address, data, "contract")
         if err != nil {
                 return nil, err
         }
