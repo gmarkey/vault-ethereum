@@ -82,7 +82,7 @@ Deposit collateral into dydx account.
                                 },
                                 "asset_type": {
                                         Type:        framework.TypeString,
-                                        Default:     "0x8707A5bf4C2842d46B31A405Ba41b858C0F876c4",
+                                        Default:     "0x02c04d8b650f44092278a7cb1e1028c82025dff622db96c934b611b84cc8de5a",
                                         Description: "Address of the deposit assed token contract.",
                                 },
                                 "contract": {
