@@ -206,7 +206,7 @@ func (b *PluginBackend) pathDydxDeposit(ctx context.Context, req *logical.Reques
 
         transactOpts.GasPrice = transactionParams.GasPrice
         transactOpts.GasLimit = transactionParams.GasLimit
-        transactOpts.Nonce    = transactionParams.Nonce
+        transactOpts.Nonce    = big.NewInt(int64(transactionParams.Nonce))
 
         b.Logger().Info(fmt.Sprintf("\nGAS PRICE: %d\n", transactOpts.GasPrice))
         b.Logger().Info(fmt.Sprintf("\nGAS LIMIT: %d\n", transactOpts.GasLimit))
