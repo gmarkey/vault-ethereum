@@ -595,7 +595,9 @@ func (b *PluginBackend) getBaseData(client *ethclient.Client, fromAddress common
 	nonceData := "0"
 	var nonce uint64
 	var amount *big.Int
-	var gasPriceIn *big.Int
+	var gasPriceData string
+	var gasPriceIn int64
+	var gasPrice *big.Int
 	_, ok := data.GetOk("amount")
 	if ok {
 		amount = util.ValidNumber(data.Get("amount").(string))
@@ -620,16 +622,15 @@ func (b *PluginBackend) getBaseData(client *ethclient.Client, fromAddress common
 
 	_, ok = data.GetOk("gas_price")
 	if ok {
-		gasPriceIn = util.TokenAmount(data.Get("gas_price").(int64), 9)
-		if gasPriceIn == nil {
-			return nil, fmt.Errorf("invalid gas price")
-		}
+                gasPriceData = data.Get("gas_price").(string)
+	        gasPriceIn, err = strconv.ParseInt(gasPriceData, 10, 64)
+		gasPrice = util.TokenAmount(gasPriceIn, 9)
 	} else {
-		gasPriceIn = util.ValidNumber("0")
+		gasPrice = util.ValidNumber("0")
 	}
 
-	if big.NewInt(0).Cmp(gasPriceIn) == 0 {
-		gasPriceIn, err = client.SuggestGasPrice(context.Background())
+	if big.NewInt(0).Cmp(gasPrice) == 0 {
+		gasPrice, err = client.SuggestGasPrice(context.Background())
 		if err != nil {
 			return nil, err
 		}
@@ -641,7 +642,7 @@ func (b *PluginBackend) getBaseData(client *ethclient.Client, fromAddress common
 			Nonce:    nonce,
 			Address:  &address,
 			Amount:   amount,
-			GasPrice: gasPriceIn,
+			GasPrice: gasPrice,
 			GasLimit: 0,
 		}, nil
 	}
@@ -649,7 +650,7 @@ func (b *PluginBackend) getBaseData(client *ethclient.Client, fromAddress common
 		Nonce:    nonce,
 		Address:  nil,
 		Amount:   amount,
-		GasPrice: gasPriceIn,
+		GasPrice: gasPrice,
 		GasLimit: 0,
 	}, nil
 
