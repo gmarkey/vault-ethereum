@@ -192,6 +192,9 @@ func (b *PluginBackend) pathDydxDeposit(ctx context.Context, req *logical.Reques
                 return nil, err
         }
 
+        transactOpts.GasPrice = transactionParams.GasPrice
+        transactOpts.GasLimit = transactionParams.GasLimit
+
         //transactOpts needs gas etc.
         contractSession := &starkwarePerpetuals.StarkwarePerpetualsSession{
                 Contract:     instance,  // Generic contract caller binding to set the session for
