@@ -93,6 +93,21 @@ Transfer some ERC-20 holdings to another address.
 `,
 			Fields: map[string]*framework.FieldSchema{
 				"name": {Type: framework.TypeString},
+                                "gas_limit": {
+                                        Type:        framework.TypeString,
+                                        Description: "The gas limit for the transaction - defaults to 21000.",
+					Default:     "21000",
+                                },
+                                "gas_price": {
+                                        Type:        framework.TypeString,
+                                        Description: "The gas price for the transaction in wei.",
+					Default:     "0",
+                                },
+                                "nonce": {
+                                        Type:        framework.TypeString,
+                                        Description: "The transaction nonce.",
+					Default:     "0",
+                                },
 				"contract": {
 					Type:        framework.TypeString,
 					Description: "The address of the ERC-20 token.",
@@ -154,6 +169,21 @@ If this function is called again it overwrites the current allowance with _value
 `,
 			Fields: map[string]*framework.FieldSchema{
 				"name": {Type: framework.TypeString},
+                                "gas_limit": {
+                                        Type:        framework.TypeString,
+                                        Description: "The gas limit for the transaction - defaults to 21000.",
+					Default:     "21000",
+                                },
+                                "gas_price": {
+                                        Type:        framework.TypeString,
+                                        Description: "The gas price for the transaction in wei.",
+					Default:     "0",
+                                },
+                                "nonce": {
+                                        Type:        framework.TypeString,
+                                        Description: "The transaction nonce.",
+					Default:     "0",
+                                },
 				"contract": {
 					Type:        framework.TypeString,
 					Description: "The address of the ERC-20 token.",
@@ -327,6 +357,10 @@ func (b *PluginBackend) pathERC20Transfer(ctx context.Context, req *logical.Requ
 		return nil, err
 	}
 
+        transactOpts.GasPrice = transactionParams.GasPrice
+        transactOpts.GasLimit = transactionParams.GasLimit
+        transactOpts.Nonce    = big.NewInt(int64(transactionParams.Nonce))
+
 	//transactOpts needs gas etc.
 	tokenSession := &erc20.Erc20Session{
 		Contract:     instance,  // Generic contract caller binding to set the session for
@@ -492,11 +526,16 @@ func (b *PluginBackend) pathERC20Approve(ctx context.Context, req *logical.Reque
 	} else {
 		tokens = util.ValidNumber("0")
 	}
+
 	tokenAmount := util.TokenAmount(tokens.Int64(), decimals)
 	transactOpts, err := b.NewWalletTransactor(chainID, wallet, account)
 	if err != nil {
 		return nil, err
 	}
+
+        transactOpts.GasPrice = transactionParams.GasPrice
+        transactOpts.GasLimit = transactionParams.GasLimit
+        transactOpts.Nonce    = big.NewInt(int64(transactionParams.Nonce))
 
 	//transactOpts needs gas etc.
 	tokenSession := &erc20.Erc20Session{

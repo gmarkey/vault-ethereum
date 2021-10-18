@@ -55,14 +55,17 @@ Deposit collateral into dydx account.
                                 "gas_limit": {
                                         Type:        framework.TypeString,
                                         Description: "The gas limit for the transaction - defaults to 21000.",
+					Default:     "21000",
                                 },
                                 "gas_price": {
                                         Type:        framework.TypeString,
                                         Description: "The gas price for the transaction in wei.",
+					Default:     "0",
                                 },
                                 "nonce": {
                                         Type:        framework.TypeString,
                                         Description: "The transaction nonce.",
+					Default:     "0",
                                 },
                                 "stark_key": {
                                         Type:        framework.TypeString,
