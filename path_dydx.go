@@ -52,6 +52,14 @@ Deposit collateral into dydx account.
 `,
                         Fields: map[string]*framework.FieldSchema{
                                 "name": {Type: framework.TypeString},
+                                "gas_limit": {
+                                        Type:        framework.TypeString,
+                                        Description: "The gas limit for the transaction - defaults to 21000.",
+                                },
+                                "gas_price": {
+                                        Type:        framework.TypeString,
+                                        Description: "The gas price for the transaction in wei.",
+                                },
                                 "stark_key": {
                                         Type:        framework.TypeString,
                                         Description: "The starkware API key.",
