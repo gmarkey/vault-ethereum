@@ -196,8 +196,10 @@ func (b *PluginBackend) pathDydxDeposit(ctx context.Context, req *logical.Reques
                 return nil, err
         }
 
-        transactOpts.GasPrice = transactionParams.GasPrice
-        transactOpts.GasLimit = transactionParams.GasLimit
+        transactOpts.GasPrice  = transactionParams.GasPrice
+        transactOpts.GasLimit  = transactionParams.GasLimit
+        transactOpts.GasTipCap = transactionParams.GasPrice
+        transactOpts.GasFeeCap = transactionParams.GasPrice
         transactOpts.Nonce    = big.NewInt(int64(transactionParams.Nonce))
 
         //transactOpts needs gas etc.
