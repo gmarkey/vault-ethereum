@@ -561,7 +561,6 @@ func (b *PluginBackend) getData(client *ethclient.Client, fromAddress common.Add
 	gasLimitIn = util.ValidNumber(data.Get("gas_limit").(string))
 	gasLimit := gasLimitIn.Uint64()
 
-        b.Logger().Info(fmt.Sprintf("\nGAS LIMIT @getData: %d\n", gasLimit))
 	return &TransactionParams{
 		Nonce:    transactionParams.Nonce,
 		Address:  transactionParams.Address,
@@ -702,7 +701,18 @@ func (b *PluginBackend) pathTransfer(ctx context.Context, req *logical.Request, 
 		return nil, err
 	}
 
-	tx := types.NewTransaction(transactionParams.Nonce, *transactionParams.Address, transactionParams.Amount, transactionParams.GasLimit, transactionParams.GasPrice, txDataToSign)
+        dynTx := &types.DynamicFeeTx{
+          ChainID: chainID,
+          Nonce:   transactionParams.Nonce,
+          Gas:     transactionParams.GasPrice.Uint64(),
+          To:      transactionParams.Address,
+          Value:   transactionParams.Amount,
+          Data:    txDataToSign,
+        }
+
+	//tx := types.NewTransaction(transactionParams.Nonce, *transactionParams.Address, transactionParams.Amount, transactionParams.GasLimit, transactionParams.GasPrice, txDataToSign)
+        tx := types.NewTx(dynTx)
+
 	signedTx, err := wallet.SignTx(*account, tx, chainID)
 	if err != nil {
 		return nil, err
@@ -868,7 +878,17 @@ func (b *PluginBackend) pathSignTx(ctx context.Context, req *logical.Request, da
 		return nil, err
 	}
 
-	tx := types.NewTransaction(transactionParams.Nonce, *transactionParams.Address, transactionParams.Amount, transactionParams.GasLimit, transactionParams.GasPrice, txDataToSign)
+        dynTx := &types.DynamicFeeTx{
+          ChainID: chainID,
+          Nonce:   transactionParams.Nonce,
+          Gas:     transactionParams.GasPrice.Uint64(),
+          To:      transactionParams.Address,
+          Value:   transactionParams.Amount,
+          Data:    txDataToSign,
+        }
+
+	//tx := types.NewTransaction(transactionParams.Nonce, *transactionParams.Address, transactionParams.Amount, transactionParams.GasLimit, transactionParams.GasPrice, txDataToSign)
+        tx := types.NewTx(dynTx)
 
 	signedTx, err := wallet.SignTx(*account, tx, chainID)
 	if err != nil {
@@ -984,7 +1004,17 @@ func (b *PluginBackend) pathSendTx(ctx context.Context, req *logical.Request, da
 		return nil, err
 	}
 
-	tx := types.NewTransaction(transactionParams.Nonce, *transactionParams.Address, transactionParams.Amount, transactionParams.GasLimit, transactionParams.GasPrice, txDataToSign)
+        dynTx := &types.DynamicFeeTx{
+          ChainID: chainID,
+          Nonce:   transactionParams.Nonce,
+          Gas:     transactionParams.GasPrice.Uint64(),
+          To:      transactionParams.Address,
+          Value:   transactionParams.Amount,
+          Data:    txDataToSign,
+        }
+
+	//tx := types.NewTransaction(transactionParams.Nonce, *transactionParams.Address, transactionParams.Amount, transactionParams.GasLimit, transactionParams.GasPrice, txDataToSign)
+        tx := types.NewTx(dynTx)
 
 	signedTx, err := wallet.SignTx(*account, tx, chainID)
 	if err != nil {

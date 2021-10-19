@@ -24,6 +24,11 @@ import (
 
 const dydx string = "dydx"
 
+var collateralID = map[*big.Int]string{
+        big.NewInt(1): "0x02893294412a4c8f915f75892b395ebbf6859ec246ec365c3b1f56f47c3a0a5d",
+        big.NewInt(3): "0x02c04d8b650f44092278a7cb1e1028c82025dff622db96c934b611b84cc8de5a",
+}
+
 // contract ERC20Interface {
 //     string public constant name = "";
 //     string public constant symbol = "";
@@ -80,11 +85,6 @@ Deposit collateral into dydx account.
                                         Default:     "0",
                                         Description: "The number of tokens to transfer.",
                                 },
-                                "asset_type": {
-                                        Type:        framework.TypeString,
-                                        Default:     "0x02c04d8b650f44092278a7cb1e1028c82025dff622db96c934b611b84cc8de5a",
-                                        Description: "Address of the deposit assed token contract.",
-                                },
                                 "contract": {
                                         Type:        framework.TypeString,
                                         Default:     "0x014F738EAd8Ec6C50BCD456a971F8B84Cd693BBe",
@@ -104,9 +104,6 @@ func (b *PluginBackend) pathDydxDeposit(ctx context.Context, req *logical.Reques
         var tokens *big.Int
         var starkKey *big.Int
         var vaultId *big.Int
-        var assetType *big.Int
-        //assetType := common.HexToAddress("0x8707a5bf4c2842d46b31a405ba41b858c0f876c4") // ropsten
-        //assetType := util.ValidNumber("0x8707a5bf4c2842d46b31a405ba41b858c0f876c4") // ropsten
 
         config, err := b.configured(ctx, req)
         if err != nil {
@@ -147,20 +144,12 @@ func (b *PluginBackend) pathDydxDeposit(ctx context.Context, req *logical.Reques
                 starkKey = big.NewInt(0)
         }
 
-        _, ok = data.GetOk("asset_type")
-        if ok {
-                assetType = util.ValidNumber(data.Get("asset_type").(string))
-                if assetType == nil {
-                        return nil, fmt.Errorf("missing asset type")
-                }
-        } else {
-                assetType = util.ValidNumber("0")
-        }
-
         chainID := util.ValidNumber(config.ChainID)
         if chainID == nil {
                 return nil, fmt.Errorf("invalid chain ID")
         }
+
+        assetType := util.ValidNumber(collateralID[chainID])
 
         client, err := ethclient.Dial(config.getRPCURL())
         if err != nil {
@@ -210,10 +199,6 @@ func (b *PluginBackend) pathDydxDeposit(ctx context.Context, req *logical.Reques
         transactOpts.GasPrice = transactionParams.GasPrice
         transactOpts.GasLimit = transactionParams.GasLimit
         transactOpts.Nonce    = big.NewInt(int64(transactionParams.Nonce))
-
-        b.Logger().Info(fmt.Sprintf("\nGAS PRICE: %d\n", transactOpts.GasPrice))
-        b.Logger().Info(fmt.Sprintf("\nGAS LIMIT: %d\n", transactOpts.GasLimit))
-        b.Logger().Info(fmt.Sprintf("\nNONCE: %d\n", transactOpts.Nonce))
 
         //transactOpts needs gas etc.
         contractSession := &starkwarePerpetuals.StarkwarePerpetualsSession{
